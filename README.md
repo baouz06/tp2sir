@@ -279,3 +279,39 @@ public void setName(String name) {
 	this.name = name;
 ```
 
+## Le Chargement des données dans la base 
+
+Dans notre fichier de JpaTest java on définit une variable du type "EntityManager" qui nous permet d'utiliser les fonctions de "select","insert","update", etc. entre JPA, API et la base de données et la variable du type "EntityManagerFactory" nous permet de créer la classe entity Manager.
+
+Pour mettre à jour les données régulièrement on fait toutes les actions dans la transaction.
+
+```
+public class JpaTest {
+	private static EntityManager manager;
+	public JpaTest(EntityManager manager) {
+		this.manager = manager;
+	}
+	public static void main(String[] args) {
+		EntityManagerFactory factory = Persistence
+				.createEntityManagerFactory("example");
+		EntityManager manager = factory.createEntityManager();
+		EntityTransaction tx = manager.getTransaction();
+		tx.begin();
+```		
+
+Une fois qu'on a fait la connexion de la base de données, on met les données comme au-dessous.
+```
+ Person personne2 = new Person();
+          personne2.setNom("Khaled");
+          personne2.setPrenom("emre");
+          personne2.setMail("email");
+	 
+	  Home home = new Home();
+          home.setNombre_de_piece(2);
+          home.setTaille(50);
+          home.setPerson_homme(personne2);
+          
+	  ElectronicDevice electronicDevice = new ElectronicDevice();
+          electronicDevice.setConsommation(100);
+          electronicDevice.setPersonnes(personne2);
+```
