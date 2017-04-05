@@ -65,8 +65,8 @@ Nous avons 5 classes en entité
 4. Heater.java
 5. HybrideDevice
 
-La classe Person.java contient 3 variables de type String pour les informations personnels avec son numero id identique et 
-3 variables de type Collection puisque chaque person reste dans une residence,a des amis et a des machines electics
+La classe Person java contient 3 variables du type String pour les informations personnelles avec son numéro id identique et 3 variables du type Collection puisque chaque person reste dans une ou plusieurs résidences et qu'il a une ou plusieurs amis et des équipements électroniques personnelles.
+
 ```
 @Column(name="id_person")
 	long id;
@@ -77,3 +77,57 @@ La classe Person.java contient 3 variables de type String pour les informations 
 	private Collection<Person> friends;
 	private Collection<ElectronicDevice> devices;
 ```
+
+Pour toutes les variables que nous avons défini dans cette classe,on a fait l'imlementation des fonctions de getter et setter.
+```
+@Id @GeneratedValue
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getNom() {
+		return nom;
+	}
+
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+	.
+	.
+	.
+	
+```
+
+Une personne peut avoir plusieurs amis et des équipements électroniques ainsi que des différentes résidences, c'est pour ça que dans les fonctions getter de ces trois variables, nous avons utilisé l'annotation "OneToMany".
+```
+@OneToMany(mappedBy="person_homme", cascade=CascadeType.PERSIST)
+	public Collection<Home> getResidences() {
+		return residences;
+	}
+
+	public void setResidences(Collection<Home> residences) {
+		this.residences = residences;
+	}
+	@OneToMany(mappedBy="friends", cascade=CascadeType.PERSIST)
+	public Collection<Person> getFriends() {
+		return friends;
+	}
+
+	public void setFriends(Collection<Person> friends) {
+		this.friends = friends;
+	}
+	
+	@OneToMany(mappedBy="personnes", cascade=CascadeType.PERSIST)
+	public Collection<ElectronicDevice> getDevices() {
+		return devices;
+	}
+
+	public void setDevices(Collection<ElectronicDevice> devices) {
+		this.devices = devices;
+	}
+```
+
