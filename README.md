@@ -65,10 +65,13 @@ Nous avons 5 classes en entité
 4. Heater.java
 5. HybrideDevice
 
+Chaque classe est une entité : donc on utilise l'annotation @Entity pour que JPA comprenne qu'il s'agit d'une entité et qu'il va créer une table portant le même nom que la classe.
+Toutes les entités possèdent  un id ayant pour annotation @Id
 ### La classe Person.java
-La classe Person.java contient 3 variables du type String pour les informations personnelles avec son numéro id identique et 3 variables du type Collection puisque chaque person reste dans une ou plusieurs résidences et qu'il a une ou plusieurs amis et des équipements électroniques personnelles.
+La classe Person.java contient 3 variables du type String pour les informations personnelles avec son numéro id identique et 3 variables du type Collection puisque chaque person reste dans une ou plusieurs résidences et qu'elle a une ou plusieurs amis et des équipements électroniques personnelles.
 
-```
+@Entity
+public class Person{
 @Column(name="id_person")
 	long id;
 	private String nom;
@@ -78,8 +81,7 @@ La classe Person.java contient 3 variables du type String pour les informations 
 	private Collection<Person> friends;
 	private Collection<ElectronicDevice> devices;
 ```
-
-Pour toutes les variables que nous avons défini dans cette classe,on a fait l'imlementation des fonctions de getter et setter.
+Remarque : toutes les annotations sont faites sur les getter et setters pour plus de compatibilité.
 ```
 @Id @GeneratedValue
 	public long getId() {
@@ -103,7 +105,7 @@ Pour toutes les variables que nous avons défini dans cette classe,on a fait l'i
 	
 ```
 
-Une personne peut avoir plusieurs amis et des équipements électroniques ainsi que des différentes résidences, c'est pour ça que dans les fonctions getter de ces trois variables, nous avons utilisé l'annotation "OneToMany".
+Une personne peut avoir plusieurs amis et des équipements électroniques ainsi que des différentes résidences, c'est pour ça que dans les fonctions getter de ces trois variables, nous avons utilisé l'annotation "OneToMany", person_homme est l'attribut de type Person dans la classe Home.
 ```
 @OneToMany(mappedBy="person_homme", cascade=CascadeType.PERSIST)
 	public Collection<Home> getResidences() {
@@ -134,40 +136,16 @@ Une personne peut avoir plusieurs amis et des équipements électroniques ainsi 
 
 ### La classe Home.java
 
-Chaque résidence a une taille, un nombre de pièces, des chauffages, des équipements électroniques. Donc nous avons défini 3 variables du type long pour la taille, le nombre de pièces et le numéro id identique et aussi pour des chauffages une variable du type Collection ainsi que pour savoir le propriétaire de la maison on a défini aussi une variable du type Person.
-```
+@Entity
+public class Home  {
 @Column(name="id_home")
 	private long id;
 	private long taille;
 	private long nombre_de_piece ;
 	private  Person person_homme;
 	private Collection<Heater> chauffage;	
-```
 
-Pour toutes les variables que nous avons défini dans cette classe,on a fait l'implementation des fonctions de getter et setter.
-```
-@Id @GeneratedValue
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public long getTaille() {
-		return taille;
-	}
-
-	public void setTaille(long taille) {
-		this.taille = taille;
-	}
-	.
-	.
-	.
-```
-
-Nous avons utilisé l'annotation "OneToMany" puisqu'une résidence peut avoir plusieurs chauffages par contre comme chaque maison peut avoir un seul propriétaire nous avons choisi l'annotation de "ManyToOne" pour la fonction getperson_homme().
+Nous avons utilisé l'annotation "OneToMany" puisqu'une résidence peut avoir plusieurs chauffages,mais une  maison ne peut avoir qu'un seul propriétaire donc nous avons choisi l'annotation "ManyToOne" pour la fonction getperson_homme().
 
 ```
 @OneToMany(mappedBy="homes", cascade=CascadeType.PERSIST)
@@ -189,75 +167,19 @@ Nous avons utilisé l'annotation "OneToMany" puisqu'une résidence peut avoir pl
 	}
 ```
 
-### La classe ElectronicDevice.java
+### Même principe pour les autres classes
 
-
-Des équipements électroniques ont une consommation moyenne en Watt/h et une personne peut avoir plusierus équipements électroniques
-c'est pour ça qu'on a défini une variable de type long pour la consomation et une variable de type Person,pour savoir les propriétaires de ces équipement.
-
-```
-	private long consommation;
-	private Person personnes;
-```
-
-Nous avons fait l'imlementation des fonctions de getter et setter avec ces deux variables comme au dessous et on utilise l'annotation "ManyToOne" car une personne peut avoir plusieurs équipements électroniques
-
-```
-public long getCconsommation() {
-		return consommation;
-	}
-	public void setCconsommation(long cconsommation) {
-		this.consommation = cconsommation;
-	}
-	@ManyToOne
-	public Person getPersonnes() {
-		return personnes;
-	}
-	public void setPersonnes(Person personnes) {
-		this.personnes = personnes;
-	}
-	
-```
-
-### La classe Heater.java
-
-Pour la classe Heater.java nous avons besoin de trois variables pour savoir le nom et la consomattion de chauffage ainsi que le nom de la résidence ou chaque chauffage se trouve.
-
-```
-	private String nom_chauffage ;
-	private String puissance;
-	private Home homes; 
-```
-Nous avons fait l'imlementation des fonctions de getter et setter avec ces trois variables comme au dessous et on utilise l'annotation "ManyToOne" car une résidence peut avoir plusieurs chauffages.
-
-```
-public String getNom_chauffage() {
-		return nom_chauffage;
-	}
-	public void setNom_chauffage(String nom_chauffage) {
-		this.nom_chauffage = nom_chauffage;
-	}
-	public String getPuissance() {
-		return puissance;
-	}
-	public void setPuissance(String puissance) {
-		this.puissance = puissance;
-	}
-	
-	@ManyToOne
-	public Home getHomes() {
-		return homes;
-	}
-	public void setHomes(Home homes) {
-		this.homes = homes;
-	}
-```
 
 ### La classe HybrideDevice.java
 
-Pour les classes Heater.java et ElectronicDevice.java, on a utilisé la commande "extends HybrideDevice" pour l'héritage. Donc dans notre base de données, on arrive à voir ces deux classes différentes en même colonne avec le champ HybrideDevice grace à la variable id qu'on a défini dans cette classe.
+Les classes Heater.java et ElectronicDevice.java sont les classes filles de HybrideDevice.java.
+pour réaliser l'heritage, lesdeux classes filles ne peuvent pas posséder un id. 
+Donc les deux sous class herite de la classe  mere qui a comme annotation @Inheritance(strategy=InheritanceType.SINGLE_TABLE),ici nous avons choisi d'avoir une seule table (InheritanceType.SINGLE_TABLE) avec des references au sous classes
 
-```
+
+@Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+public class HybrideDevice {
 public HybrideDevice() {
 	// TODO Auto-generated constructor stub
 }
@@ -265,23 +187,11 @@ public HybrideDevice(String name) {
 	super();
 	this.name = name;
 }
-@Id @GeneratedValue
-public long getId() {
-	return id;
-}
-public void setId(long id) {
-	this.id = id;
-}
-public String getName() {
-	return name;
-}
-public void setName(String name) {
-	this.name = name;
 ```
 
 ## Le Chargement des données dans la base 
 
-Dans notre fichier de JpaTest java on définit une variable du type "EntityManager" qui nous permet d'utiliser les fonctions de "select","insert","update", etc. entre JPA, API et la base de données et la variable du type "EntityManagerFactory" nous permet de créer la classe entity Manager.
+Dans notre fichier  JpaTest java on définit une variable du type "EntityManager" qui nous permet d'utiliser les fonctions de "select","insert","update", etc. entre JPA, API et la base de données et la variable du type "EntityManagerFactory" nous permet de créer la classe entity Manager.
 
 Pour mettre à jour les données régulièrement on fait toutes les actions dans la transaction.
 
@@ -299,7 +209,7 @@ public class JpaTest {
 		tx.begin();
 ```		
 
-Une fois qu'on a fait la connexion de la base de données, on met les données comme au-dessous.
+aprés la connexion à la base de données, on procède comme ceci:
 ```
  Person personne2 = new Person();
           personne2.setNom("Khaled");
