@@ -174,7 +174,7 @@ Nous avons utilisé l'annotation "OneToMany" puisqu'une résidence peut avoir pl
 
 Les classes Heater.java et ElectronicDevice.java sont les classes filles de HybrideDevice.java.
 pour réaliser l'heritage, lesdeux classes filles ne peuvent pas posséder un id. 
-Donc les deux sous class herite de la classe  mere qui a comme annotation @Inheritance(strategy=InheritanceType.SINGLE_TABLE),ici nous avons choisi d'avoir une seule table (InheritanceType.SINGLE_TABLE) avec des references au sous classes
+Donc les deux sous classes heritent de la classe  mere qui a comme annotation @Inheritance(strategy=InheritanceType.SINGLE_TABLE),ici nous avons choisi d'avoir une seule table (InheritanceType.SINGLE_TABLE) avec des réferencement au sous classes
 
 
 @Entity
